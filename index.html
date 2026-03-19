@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multifamily Underwriting Prototype</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Underwriting Workbench</p>
+          <h1>Multifamily acquisitions modeled across multiple capital structures.</h1>
+          <p class="hero-copy">
+            This prototype focuses on a single-user workflow, baseline document intake,
+            editable assumptions, four side-by-side scenarios, and a readable
+            underwriting engine that reviewers can inspect without extra tooling.
+          </p>
+        </div>
+        <div class="hero-panel">
+          <p class="panel-label">Current goal</p>
+          <strong>Stress-test a multifamily deal before LOI, PSA, or closing.</strong>
+          <ul class="status-list">
+            <li>Single-user MVP</li>
+            <li>Multifamily only</li>
+            <li>AI and multi-user intentionally deferred</li>
+          </ul>
+        </div>
+      </header>
+
+      <main class="main-grid">
+        <section class="card span-8">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">1. Project setup</p>
+              <h2>Deal context</h2>
+            </div>
+            <p class="section-note">
+              The prototype stores everything in browser memory for easy review.
+            </p>
+          </div>
+
+          <div class="form-grid two-up">
+            <label>
+              Project name
+              <input id="projectName" type="text" placeholder="Phoenix Value Add 128" />
+            </label>
+            <label>
+              Deal status
+              <select id="dealStatus">
+                <option value="screening">Screening</option>
+                <option value="loi-submitted">LOI Submitted</option>
+                <option value="loi-accepted">LOI Accepted</option>
+                <option value="psa-signed">PSA Signed</option>
+                <option value="closed">Closed</option>
+                <option value="archived">Archived</option>
+              </select>
+            </label>
+            <label>
+              Market
+              <input id="marketName" type="text" placeholder="Phoenix, AZ" />
+            </label>
+            <label>
+              Unit count
+              <input id="unitCount" type="number" min="1" step="1" />
+            </label>
+          </div>
+        </section>
+
+        <section class="card span-4">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Workflow snapshot</p>
+              <h2>Version 1 scope</h2>
+            </div>
+          </div>
+          <ol class="workflow-list">
+            <li>Upload broker documents</li>
+            <li>Review draft extracted fields</li>
+            <li>Select acquisition structure</li>
+            <li>Set return targets and assumptions</li>
+            <li>Compare four editable scenarios</li>
+            <li>Review monthly and annual outcomes</li>
+          </ol>
+        </section>
+
+        <section class="card span-5">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">2. Document intake</p>
+              <h2>Uploaded broker files</h2>
+            </div>
+            <p class="section-note">
+              The current prototype tags files and generates draft extraction items for user review.
+            </p>
+          </div>
+
+          <label class="upload-zone">
+            <input id="documentUpload" type="file" multiple />
+            <span>Drop or select T-12s, rent rolls, tax docs, term sheets, titles, or surveys.</span>
+          </label>
+
+          <div id="documentList" class="document-list"></div>
+        </section>
+
+        <section class="card span-7">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">3. Baseline assumptions</p>
+              <h2>Income, expenses, debt, and return targets</h2>
+            </div>
+            <p class="section-note">
+              These inputs seed every scenario before scenario-specific overrides are applied.
+            </p>
+          </div>
+
+          <div class="form-grid three-up">
+            <label>
+              Assumption preset
+              <select id="assumptionPreset">
+                <option value="balanced">Balanced preset</option>
+                <option value="conservative">Conservative preset</option>
+                <option value="aggressive">Aggressive preset</option>
+              </select>
+            </label>
+            <label>
+              Target annualized return
+              <input id="targetArr" type="number" step="0.1" />
+            </label>
+            <label>
+              Target IRR
+              <input id="targetIrr" type="number" step="0.1" />
+            </label>
+            <label>
+              Target cash-on-cash
+              <input id="targetCoc" type="number" step="0.1" />
+            </label>
+            <label>
+              Average in-place rent / month
+              <input id="avgRent" type="number" step="1" />
+            </label>
+            <label>
+              Average market rent / month
+              <input id="marketRent" type="number" step="1" />
+            </label>
+            <label>
+              Other income / unit / month
+              <input id="otherIncomePerUnit" type="number" step="1" />
+            </label>
+            <label>
+              Economic occupancy
+              <input id="economicOccupancy" type="number" step="0.1" />
+            </label>
+            <label>
+              Lease-up units / month
+              <input id="leaseUpPerMonth" type="number" step="1" />
+            </label>
+            <label>
+              Renovated units / month
+              <input id="renoUnitsPerMonth" type="number" step="1" />
+            </label>
+            <label>
+              Renovation premium / unit / month
+              <input id="renoPremium" type="number" step="1" />
+            </label>
+            <label>
+              Annual rent growth
+              <input id="rentGrowth" type="number" step="0.1" />
+            </label>
+            <label>
+              Annual expense growth
+              <input id="expenseGrowth" type="number" step="0.1" />
+            </label>
+            <label>
+              OpEx / unit / month
+              <input id="opexPerUnit" type="number" step="1" />
+            </label>
+            <label>
+              Property taxes / year
+              <input id="propertyTaxes" type="number" step="100" />
+            </label>
+            <label>
+              Insurance / year
+              <input id="insurance" type="number" step="100" />
+            </label>
+            <label>
+              Payroll / year
+              <input id="payroll" type="number" step="100" />
+            </label>
+            <label>
+              Repairs / year
+              <input id="repairs" type="number" step="100" />
+            </label>
+            <label>
+              Management fee
+              <input id="managementFee" type="number" step="0.1" />
+            </label>
+            <label>
+              Replacement reserve / unit / year
+              <input id="replacementReserve" type="number" step="1" />
+            </label>
+            <label>
+              Purchase price
+              <input id="purchasePrice" type="number" step="1000" />
+            </label>
+            <label>
+              Closing costs
+              <input id="closingCosts" type="number" step="1000" />
+            </label>
+            <label>
+              Senior loan amount
+              <input id="loanAmount" type="number" step="1000" />
+            </label>
+            <label>
+              Interest rate
+              <input id="interestRate" type="number" step="0.05" />
+            </label>
+            <label>
+              Amortization years
+              <input id="amortYears" type="number" step="1" />
+            </label>
+            <label>
+              Interest-only months
+              <input id="ioMonths" type="number" step="1" />
+            </label>
+            <label>
+              Seller carry amount
+              <input id="sellerCarryAmount" type="number" step="1000" />
+            </label>
+            <label>
+              Seller carry rate
+              <input id="sellerCarryRate" type="number" step="0.05" />
+            </label>
+            <label>
+              Seller carry amortization years
+              <input id="sellerCarryAmortYears" type="number" step="1" />
+            </label>
+            <label>
+              Hold period in years
+              <input id="holdYears" type="number" step="1" />
+            </label>
+            <label>
+              Exit cap rate
+              <input id="exitCapRate" type="number" step="0.05" />
+            </label>
+            <label>
+              Sales costs
+              <input id="saleCostsPct" type="number" step="0.1" />
+            </label>
+            <label>
+              Refinance year
+              <input id="refiYear" type="number" step="1" />
+            </label>
+            <label>
+              Refinance rate
+              <input id="refiRate" type="number" step="0.05" />
+            </label>
+            <label>
+              Refinance LTV
+              <input id="refiLtv" type="number" step="0.1" />
+            </label>
+            <label>
+              Prepay penalty
+              <input id="prepayPenaltyPct" type="number" step="0.1" />
+            </label>
+            <label>
+              Capital transaction fee
+              <input id="capitalTransactionFeePct" type="number" step="0.1" />
+            </label>
+          </div>
+        </section>
+
+        <section class="card span-12">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">4. Acquisition structure</p>
+              <h2>Capital structure and distribution logic</h2>
+            </div>
+            <p class="section-note">
+              Multiple mode supports up to three layered structures with one primary method.
+            </p>
+          </div>
+
+          <div class="form-grid three-up">
+            <label>
+              Acquisition method
+              <select id="acquisitionMethod">
+                <option value="Traditional Purchase">Traditional Purchase</option>
+                <option value="Syndication">Syndication</option>
+                <option value="Subject-To">Subject-To</option>
+                <option value="Seller Finance">Seller Finance</option>
+                <option value="Joint Venture">Joint Venture</option>
+                <option value="Assumable Loan">Assumable Loan</option>
+                <option value="Cash Purchase">Cash Purchase</option>
+                <option value="Multiple">Multiple</option>
+              </select>
+            </label>
+            <label>
+              Primary method
+              <select id="primaryMethod">
+                <option value="Traditional Purchase">Traditional Purchase</option>
+                <option value="Syndication">Syndication</option>
+                <option value="Subject-To">Subject-To</option>
+                <option value="Seller Finance">Seller Finance</option>
+                <option value="Joint Venture">Joint Venture</option>
+                <option value="Assumable Loan">Assumable Loan</option>
+                <option value="Cash Purchase">Cash Purchase</option>
+              </select>
+            </label>
+            <label>
+              Waterfall mode
+              <select id="waterfallMode">
+                <option value="pro-rata">Pro rata only</option>
+                <option value="pref-and-promote">Preferred return + return of capital + promote</option>
+              </select>
+            </label>
+          </div>
+
+          <div id="layeredMethods" class="layered-methods"></div>
+
+          <div class="capital-grid">
+            <article class="subcard">
+              <h3>GP structure</h3>
+              <div id="gpTable"></div>
+            </article>
+            <article class="subcard">
+              <h3>LP classes</h3>
+              <div id="lpTable"></div>
+            </article>
+            <article class="subcard">
+              <h3>Waterfall controls</h3>
+              <div class="form-grid one-up compact">
+                <label>
+                  LP preferred return
+                  <input id="lpPrefRate" type="number" step="0.1" />
+                </label>
+                <label>
+                  GP promote share of remaining profit
+                  <input id="gpPromoteShare" type="number" step="0.1" />
+                </label>
+                <label>
+                  GP equity contribution
+                  <input id="gpEquityContribution" type="number" step="1000" />
+                </label>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="card span-12">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">5. Scenario comparison</p>
+              <h2>Four editable views of the same deal</h2>
+            </div>
+            <div class="actions">
+              <button id="recalculateButton" class="primary-button">Recalculate scenarios</button>
+            </div>
+          </div>
+
+          <div id="scenarioGrid" class="scenario-grid"></div>
+        </section>
+
+        <section class="card span-7">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">6. Comparison table</p>
+              <h2>Side-by-side deal metrics</h2>
+            </div>
+          </div>
+          <div id="comparisonTable"></div>
+        </section>
+
+        <section class="card span-5">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">7. Reviewer notes</p>
+              <h2>Implementation guideposts</h2>
+            </div>
+          </div>
+          <div class="notes-panel">
+            <p>
+              OCR, AI extraction, user accounts, file persistence, and audit logs are represented
+              as documented extension points rather than fully implemented features in this draft.
+            </p>
+            <p>
+              The engine currently prioritizes transparent formulas and editable assumptions over
+              deep spreadsheet parity. Your reference model can tighten the formulas in the next pass.
+            </p>
+            <p>
+              Export buttons are intentionally represented as future integration hooks once the
+              output templates are supplied.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./underwriting-engine.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
