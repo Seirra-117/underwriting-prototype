@@ -1,61 +1,58 @@
 # Multifamily Underwriting Prototype
 
-This is a first-pass web prototype for a multifamily underwriting application. It is intentionally built with plain HTML, CSS, and JavaScript so reviewers can inspect the logic without a bundler, server runtime, or external dependencies.
+This prototype is now organized around the structure of the reference workbook `20260311 Veranda UW.xlsx`. Instead of a single-page underwriting sheet, the app mirrors the workbook's core underwriting story through dedicated web views.
 
-## What is implemented
+## Current web views
 
-- Single-user web interface for multifamily underwriting
-- Project setup and deal status workflow
-- Broker document upload intake with placeholder extraction rows and confidence flags
-- Editable baseline assumptions for income, expenses, debt, refinance, and disposition
-- Acquisition method selector with support for layered structures in `Multiple` mode
-- GP and LP class modeling for syndication and joint venture style capital stacks
-- Four side-by-side scenario cards with editable deltas
-- Underwriting engine for:
-  - monthly and annual projections
-  - equity multiple
-  - annualized rate of return
-  - annualized IRR
-  - cash-on-cash
-  - DSCR
-  - break-even ratio
-  - debt yield
-  - baseline cap rate
-  - refinance and sale distribution logic
+- Dashboard
+- Inputs
+- Scenarios
+- Summary
+- P&L
+- Acquisition
+- Exit Strategy
+- Returns
+- Loans
+- Quick Screen
+- Docs
 
-## What is intentionally stubbed for later phases
+## What the current release mirrors from the workbook
 
-- OCR and AI-backed document extraction
-- File persistence and cloud storage
-- User accounts and audit trail
-- Excel import/export
-- PDF memo generation
-- Deep spreadsheet parity with your existing underwriting model
-- Phase 2 member buyout event logic
+- Readiness dashboard logic similar to `About`
+- Side-by-side scenario comparison similar to `Scenarios`
+- Executive summary similar to `Summary`
+- Annual operating projection view similar to `P&L`
+- Sources and uses view similar to `Acquisition Costs`
+- Refinance and sale view similar to `Exit Strategy`
+- Member return and IRR support views similar to `Returns` and `IRR`
+- Annualized loan schedules similar to `Loans`, `1st Mortgage 1`, `2nd Mortgage 1`, and `1st Mortgage Re-Fi`
+- Quick underwriting screens similar to `2-Minute Analysis` and `MinMax LOI Analysis`
+
+## What is still approximate
+
+- Exact cell-for-cell parity with the spreadsheet formulas
+- Rent comps detail and floorplan-level rent target modeling
+- Full CapEx budget worksheet depth
+- Property tax worksheet logic by county formula
+- Insurance and lender term specialty worksheets
+- Excel import/export parity
+- OCR and AI-backed extraction
+- Multi-user audit trail
 
 ## How to run
 
 Open [index.html](/home/osiris/ws/repos/underwriting-prototype/index.html) in a browser.
 
-If you want a lightweight local server for easier browser testing, run:
+## Key files
 
-```bash
-cd /home/osiris/ws/repos/underwriting-prototype
-python3 -m http.server 4173
-```
+- [index.html](/home/osiris/ws/repos/underwriting-prototype/index.html): workbook-style app shell and view containers
+- [styles.css](/home/osiris/ws/repos/underwriting-prototype/styles.css): visual system, responsive layout, and workbook-like presentation
+- [app.js](/home/osiris/ws/repos/underwriting-prototype/app.js): state, tabbed rendering, scenario editing, and workbook view generation
+- [underwriting-engine.js](/home/osiris/ws/repos/underwriting-prototype/underwriting-engine.js): underwriting calculations, refinance logic, returns, and debt summaries
+- [template-mapping.md](/home/osiris/ws/repos/underwriting-prototype/docs/template-mapping.md): notes on how the spreadsheet was mapped into the app
 
-Then open `http://localhost:4173`.
+## Notes
 
-## File guide
-
-- [index.html](/home/osiris/ws/repos/underwriting-prototype/index.html): reviewer-facing UI shell and app layout
-- [styles.css](/home/osiris/ws/repos/underwriting-prototype/styles.css): visual system and responsive layout
-- [app.js](/home/osiris/ws/repos/underwriting-prototype/app.js): state, event handling, UI rendering, and scenario comparison logic
-- [underwriting-engine.js](/home/osiris/ws/repos/underwriting-prototype/underwriting-engine.js): underwriting formulas, debt schedules, and waterfall distribution logic
-
-## Notes for reviewers
-
-- The code is commented through naming and separation rather than excessive inline commentary.
-- AI integration should be added behind the document extraction hooks in [app.js](/home/osiris/ws/repos/underwriting-prototype/app.js) and not embedded directly into the UI layer.
-- The refinance event currently assumes replacement of the original debt stack and applies the order you specified: debt payoff, prepayment penalty, capital transaction fee, return of capital, then remaining distributions.
-- The annualized return is currently modeled as the compounded annual return implied by equity multiple over the hold period. If your reference spreadsheet uses a different ARR formula, we can swap it cleanly in the engine.
+- The spreadsheet was reviewed by reading the workbook XML directly in this environment.
+- The current app is intended to match the workbook's functional shape first, then tighten formula parity in later passes.
+- Once you identify the most critical formula regions in the spreadsheet, those can be ported with much higher fidelity.
